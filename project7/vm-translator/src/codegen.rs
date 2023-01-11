@@ -131,7 +131,9 @@ pub fn codegen_instruction(
     indexing: &mut StaticIndexing,
     labels_generator: &mut LabelGenerator,
 ) -> String {
-    match i {
+    let mut s = format!("// {:?}\n", i);
+    s.push_str(
+    &match i {
         VMInstruction::Push(segment, seg_idx) => {
             format!(
                 "{}\n\
@@ -162,7 +164,8 @@ pub fn codegen_instruction(
         }
         c @ (VMInstruction::Not | VMInstruction::Neg) => one_arg_instruction(c),
         c => two_arg_arith_logic_instruction(c),
-    }
+    });
+    s
 }
 
 fn cmp_instruction(op: VMInstruction, label_gen: &mut LabelGenerator) -> String {
@@ -180,9 +183,9 @@ fn cmp_instruction(op: VMInstruction, label_gen: &mut LabelGenerator) -> String 
              @SP\n\
              AM=M-1\n\
              D=M-D\n\
-             @SP\n\
-             A=M\n\
-             M=-1\n\
+             @SP
+             A=M
+             M=-1
              @{label}\n\
              {operation}\n\
              @SP\n\
@@ -222,6 +225,6 @@ fn one_arg_instruction(op: VMInstruction) -> String {
     format!(
         "@SP\n\
              A=M-1\n\
-             {operation}"
+             {operation}\n"
     )
 }
