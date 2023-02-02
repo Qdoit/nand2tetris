@@ -1,0 +1,268 @@
+function Square.new 0
+push constant 2
+call Memory.alloc 1
+pop pointer 0
+push argument 0
+pop this 0
+push argument 1
+pop this 1
+push pointer 0
+return
+function Square.draw 4
+push argument 0
+pop pointer 0
+push this 0
+push constant 1
+neg
+gt
+push this 0
+and
+push constant 10
+lt
+push this 1
+and
+push constant 1
+neg
+gt
+push this 1
+and
+push constant 20
+lt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push argument 1
+call DrawBoard.origin_x 1
+push this 0
+push argument 1
+call DrawBoard.square_size 1
+call Math.multiply 2
+add
+pop local 0
+push argument 1
+call DrawBoard.origin_y 1
+push this 1
+push argument 1
+call DrawBoard.square_size 1
+call Math.multiply 2
+add
+pop local 1
+push local 0
+push argument 1
+call DrawBoard.square_size 1
+add
+pop local 2
+push local 1
+push argument 1
+call DrawBoard.square_size 1
+add
+pop local 3
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push local 0
+push local 1
+push local 2
+push local 3
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push local 0
+push constant 1
+add
+push local 1
+push constant 1
+add
+push local 2
+push constant 1
+sub
+push local 3
+push constant 1
+sub
+call Screen.drawRectangle 4
+pop temp 0
+label IF_FALSE0
+push constant 0
+return
+function Square.undraw 4
+push argument 0
+pop pointer 0
+push this 0
+push constant 1
+neg
+gt
+push this 0
+and
+push constant 10
+lt
+push this 1
+and
+push constant 1
+neg
+gt
+push this 1
+and
+push constant 20
+lt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push argument 1
+call DrawBoard.origin_x 1
+push this 0
+push argument 1
+call DrawBoard.square_size 1
+call Math.multiply 2
+add
+pop local 0
+push argument 1
+call DrawBoard.origin_y 1
+push this 1
+push argument 1
+call DrawBoard.square_size 1
+call Math.multiply 2
+add
+pop local 1
+push local 0
+push argument 1
+call DrawBoard.square_size 1
+add
+pop local 2
+push local 1
+push argument 1
+call DrawBoard.square_size 1
+add
+pop local 3
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push local 0
+push local 1
+push local 2
+push local 3
+call Screen.drawRectangle 4
+pop temp 0
+label IF_FALSE0
+push constant 0
+return
+function Square.x 0
+push argument 0
+pop pointer 0
+push this 0
+return
+function Square.y 0
+push argument 0
+pop pointer 0
+push this 1
+return
+function Square.set_x 0
+push argument 0
+pop pointer 0
+push argument 1
+pop this 0
+push constant 0
+return
+function Square.set_y 0
+push argument 0
+pop pointer 0
+push argument 1
+pop this 1
+push constant 0
+return
+function Square.collided 0
+push argument 0
+pop pointer 0
+push this 1
+push constant 19
+gt
+push this 1
+push constant 0
+lt
+or
+push this 0
+push constant 9
+gt
+or
+push this 0
+push constant 0
+lt
+or
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+not
+return
+goto IF_END0
+label IF_FALSE0
+push this 0
+push this 1
+call Board.is_square_filled 2
+return
+label IF_END0
+function Square.print 0
+push argument 0
+pop pointer 0
+push constant 8
+call String.new 1
+push constant 83
+call String.appendChar 2
+push constant 113
+call String.appendChar 2
+push constant 114
+call String.appendChar 2
+push constant 123
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
+push constant 120
+call String.appendChar 2
+push constant 58
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
+call Output.printString 1
+pop temp 0
+push this 0
+call Output.printInt 1
+pop temp 0
+push constant 4
+call String.new 1
+push constant 32
+call String.appendChar 2
+push constant 121
+call String.appendChar 2
+push constant 58
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
+call Output.printString 1
+pop temp 0
+push this 1
+call Output.printInt 1
+pop temp 0
+push constant 3
+call String.new 1
+push constant 32
+call String.appendChar 2
+push constant 125
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
+call Output.printString 1
+pop temp 0
+call Output.println 0
+pop temp 0
+push constant 0
+return
+function Square.dispose 0
+push argument 0
+pop pointer 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return

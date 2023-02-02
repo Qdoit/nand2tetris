@@ -1,0 +1,124 @@
+class Main {
+    function void main() {
+        var Piece piece;
+        var int fall_down_counter;
+        var bool has_attached;
+        var bool fall_fast;
+        var bool up_pressed;
+        var int swap_idx;
+        var bool can_swap;
+        var int tmp;
+        var DrawBoard side_board;
+        var Piece swap_piece;
+        var DrawBoard points_board;
+        var int seed_counter;
+        var bool was_seed_set;
+        var bool should_break;
+        let should_break = false;
+        let up_pressed = false;
+        do PieceBlueprint.init_statics();
+        do Board.draw_initial();
+        do Random.set_seed(5040);
+        let piece = Piece.new();
+        let has_attached = false;
+        let can_swap = true;
+        let swap_idx = Random.next_in_range(0, 7);
+        let swap_piece = Piece.new_with_blueprint_idx_at(swap_idx, 1, 1);
+        
+        let side_board = DrawBoard.new(48, 72, 12, 350, 50);
+        do side_board.draw_outline();
+        do Output.moveCursor(4, 44);
+        do Output.printString("STORE");
+        do swap_piece.draw(side_board);
+        // todo: move this to update loop too 
+        let points_board = DrawBoard.new(21, 62, 0, 100, 50);
+        do points_board.draw_outline();
+        do Output.moveCursor(4, 13);
+        do Output.printString("POINTS");
+        do Output.moveCursor(5, 13);
+        do Output.printInt(Board.points());
+
+
+        while (~should_break) {
+            if(~was_seed_set) {
+                let seed_counter = seed_counter + 1;
+                if(~(Keyboard.keyPressed() = 0)) {
+                    let was_seed_set = true;
+                    do Random.set_seed(seed_counter*13);
+                }
+            }
+            do Output.moveCursor(5, 13);
+            do Output.printInt(Board.points());
+            if(Keyboard.keyPressed() = 67) {
+                if(can_swap) {
+                    let tmp = swap_idx;
+                    do swap_piece.undraw(side_board);
+                    do swap_piece.dispose();
+                    let swap_idx = piece.blueprint_idx();
+                    let swap_piece = Piece.new_with_blueprint_idx_at(swap_idx, 1, 1);
+                    if(swap_idx = 1) {
+                        do swap_piece.dispose();
+                        let swap_piece = Piece.new_with_blueprint_idx_at(swap_idx, 1, 0);
+                    }
+                    do side_board.draw_outline();
+                    do Output.moveCursor(4, 44);
+                    do Output.printString("STORE");
+                    do swap_piece.draw(side_board);
+                    do piece.undraw(Board.draw_board());
+                    do piece.dispose();
+                    let piece = Piece.new_with_blueprint_idx(tmp);
+                    let can_swap = false;
+                } 
+            }
+            if(has_attached) {
+                let can_swap = true;
+                let has_attached = false;
+                do piece.dispose();
+                let piece = Piece.new();
+                let has_attached = piece.tick();
+            }
+            if(Board.is_lost()) {
+                do Output.moveCursor(0, 27);
+                do Output.printString("GAME  OVER");
+                let should_break = true;
+            }
+            if(Keyboard.keyPressed() = 130) {
+                do piece.move_left(); 
+            } 
+            if(Keyboard.keyPressed() = 132) {
+                do piece.move_right();
+            }
+            
+            if(Keyboard.keyPressed() = 131) {
+                if(up_pressed = false) {
+                    do piece.rotate();
+                    let up_pressed = true;
+                }
+            } else {
+                let up_pressed = false;
+            }
+
+         
+            
+            let fall_down_counter = fall_down_counter + 1;
+            if(fall_down_counter = 5) {
+                let has_attached = piece.tick();
+                let fall_down_counter = 0;
+            }
+            
+            let fall_fast = false;
+            if (Keyboard.keyPressed() = 133) {
+                let fall_fast = true;
+            }
+
+            do Board.detect_full_lines();
+            
+            if(fall_fast) {
+                do Sys.wait(2);
+            } else {
+                do Sys.wait(70);
+            }
+        }
+        return;
+    }
+}

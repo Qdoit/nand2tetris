@@ -1,0 +1,152 @@
+class Board {
+    // height: 240 px
+    // width: 120 px
+    // square size: 12px
+
+    // area start point: (196, 8)
+    // area end point: (316, 248)
+    // border: 2 px
+
+    static DrawBoard draw_board;
+
+    static Array filled_map;
+
+    static int points;
+    
+    function int points() {
+        return points;
+    }
+
+    function DrawBoard draw_board() {
+        return draw_board;
+    }
+
+    function void draw_initial() {
+        let draw_board = DrawBoard.new(240, 120, 12, 196, 8);
+        let filled_map = Array.new(200);
+        let points = 0;
+        do draw_board.draw_outline();
+        
+        return;
+    }
+
+    function void detect_full_lines() {
+        var int y, y_process, cur_seq_len;
+        var bool was_empty;
+        let y = 0;
+        while(y < 20) {
+            if(Board.is_line_full(y)) {
+                let cur_seq_len = cur_seq_len + 1;
+                let was_empty = false;
+                let y_process = y;
+                while(y_process > 0) {
+                    do Board.move_line(y_process-1, y_process);
+                    let y_process = y_process-1;
+                }
+            } else {
+                let was_empty = true;
+                
+            }
+            
+            if(cur_seq_len = 4) {
+                let points = points + 1200;
+                let cur_seq_len = 0;
+            }
+ 
+
+            if(was_empty = true) {
+                if(cur_seq_len = 1) {
+                    let points = points + 40;
+                } else { 
+                    if(cur_seq_len = 2) {
+                        let points = points + 100;
+                    } else { 
+                        if(cur_seq_len = 3) {
+                            let points = points + 300;
+                        }
+                    } 
+                } 
+                let cur_seq_len = 0;
+            }
+
+            let y = y + 1;
+        }
+
+        if(cur_seq_len = 1) {
+            let points = points + 40;
+        } else { 
+            if(cur_seq_len = 2) {
+                let points = points + 100;
+            } else { 
+                if(cur_seq_len = 3) {
+                    let points = points + 300;
+                } else {
+                    if(cur_seq_len = 4) {
+                        let points = points + 1200;
+                    }
+                }
+            } 
+        } 
+        return;
+    }
+
+    function bool is_lost() {
+        var int x;
+        let x = 0;
+        while(x < 10) {
+            if(Board.is_square_filled(x, 0)) {
+                return true;
+            }
+            let x= x+1;
+        }
+        return false;
+    }
+
+    function void move_line(int y1, int y2) {
+        var int x;
+        var bool is_set_square;
+        var Square sqr;
+        let x = 0;
+        while(x < 10) {
+            let is_set_square = Board.is_square_filled(x, y1);
+            do Board.set_square_filled(x, y2, is_set_square);
+
+            let sqr = Square.new(x, y2);
+            if(is_set_square) {
+                do sqr.draw(draw_board);
+            } else {
+                do sqr.undraw(draw_board);
+            }
+            do sqr.dispose();
+            do Board.set_square_filled(x, y1, false);
+            let sqr = Square.new(x, y1);
+            do sqr.undraw(draw_board);
+            do sqr.dispose();
+            let x = x + 1;
+        }
+        return;
+    }
+
+    function bool is_line_full(int y) {
+        var int x;
+        var bool is_full;
+        let x = 0;
+        let is_full = true;
+        while(x < 10) {
+            if(~Board.is_square_filled(x, y)) {
+                let is_full = false;
+            }
+            let x = x + 1;
+        }
+        return is_full;
+    }
+
+    function bool is_square_filled(int x, int y) {
+        return filled_map[y * 10 + x];
+    }
+
+    function void set_square_filled(int x, int y, bool status) {
+        let filled_map[y*10+x] = status;
+        return;
+    }
+}

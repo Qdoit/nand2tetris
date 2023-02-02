@@ -1,0 +1,80 @@
+class Square {
+    // position in Board, starting from left upper corner = (0,0)
+    field int x, y;
+    
+    constructor Square new(int pos_x, int pos_y) {
+        let x = pos_x;
+        let y = pos_y;
+        return this;
+    }
+
+    method void draw(DrawBoard board) {
+        var int lu_x, lu_y, rd_x, rd_y;
+        if(x > -1 & x < 10 & y > -1 & y < 20) {
+            let lu_x = board.origin_x() + (x*board.square_size());
+            let lu_y = board.origin_y() + (y*board.square_size());
+            let rd_x = lu_x + board.square_size();
+            let rd_y = lu_y + board.square_size();
+            
+            do Screen.setColor(false);
+            do Screen.drawRectangle(lu_x, lu_y, rd_x, rd_y);
+            do Screen.setColor(true);
+            do Screen.drawRectangle(lu_x+1, lu_y+1, rd_x-1, rd_y-1);
+        }
+        return;
+    }
+
+    method void undraw(DrawBoard board) { 
+        var int lu_x, lu_y, rd_x, rd_y;
+        if(x > -1 & x < 10 & y > -1 & y < 20) {
+            let lu_x = board.origin_x() + (x*board.square_size());
+            let lu_y = board.origin_y() + (y*board.square_size());
+            let rd_x = lu_x + board.square_size();
+            let rd_y = lu_y + board.square_size();
+            do Screen.setColor(false);
+            do Screen.drawRectangle(lu_x, lu_y, rd_x, rd_y);
+        }
+        return;
+    }
+
+    method int x() {
+        return x;
+    }
+
+    method int y() {
+        return y;
+    }
+
+    method void set_x(int new_x) {
+        let x = new_x;
+        return;
+    }
+
+    method void set_y(int new_y) {
+        let y = new_y;
+        return;
+    }
+
+    method bool collided() {
+        if((y > 19) | (y < 0) | (x > 9) | (x < 0)) {
+            return true;
+        } else {
+            return Board.is_square_filled(x, y);
+        }
+    }
+
+    method void print() {
+        do Output.printString("Sqr{ x: ");
+        do Output.printInt(x);
+        do Output.printString(" y: ");
+        do Output.printInt(y);
+        do Output.printString(" } ");
+        do Output.println();
+        return;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+}

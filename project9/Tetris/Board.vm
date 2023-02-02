@@ -1,0 +1,335 @@
+function Board.points 0
+push static 2
+return
+function Board.draw_board 0
+push static 0
+return
+function Board.draw_initial 0
+push constant 240
+push constant 120
+push constant 12
+push constant 196
+push constant 8
+call DrawBoard.new 5
+pop static 0
+push constant 200
+call Array.new 1
+pop static 1
+push constant 0
+pop static 2
+push static 0
+call DrawBoard.draw_outline 1
+pop temp 0
+push constant 0
+return
+function Board.detect_full_lines 4
+push constant 0
+pop local 0
+label WHILE_EXP0
+push local 0
+push constant 20
+lt
+not
+if-goto WHILE_END0
+push local 0
+call Board.is_line_full 1
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push local 2
+push constant 1
+add
+pop local 2
+push constant 0
+pop local 3
+push local 0
+pop local 1
+label WHILE_EXP1
+push local 1
+push constant 0
+gt
+not
+if-goto WHILE_END1
+push local 1
+push constant 1
+sub
+push local 1
+call Board.move_line 2
+pop temp 0
+push local 1
+push constant 1
+sub
+pop local 1
+goto WHILE_EXP1
+label WHILE_END1
+goto IF_END0
+label IF_FALSE0
+push constant 0
+not
+pop local 3
+label IF_END0
+push local 2
+push constant 4
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push static 2
+push constant 1200
+add
+pop static 2
+push constant 0
+pop local 2
+label IF_FALSE1
+push local 3
+push constant 0
+not
+eq
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push local 2
+push constant 1
+eq
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push static 2
+push constant 40
+add
+pop static 2
+goto IF_END3
+label IF_FALSE3
+push local 2
+push constant 2
+eq
+if-goto IF_TRUE4
+goto IF_FALSE4
+label IF_TRUE4
+push static 2
+push constant 100
+add
+pop static 2
+goto IF_END4
+label IF_FALSE4
+push local 2
+push constant 3
+eq
+if-goto IF_TRUE5
+goto IF_FALSE5
+label IF_TRUE5
+push static 2
+push constant 300
+add
+pop static 2
+label IF_FALSE5
+label IF_END4
+label IF_END3
+push constant 0
+pop local 2
+label IF_FALSE2
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push local 2
+push constant 1
+eq
+if-goto IF_TRUE6
+goto IF_FALSE6
+label IF_TRUE6
+push static 2
+push constant 40
+add
+pop static 2
+goto IF_END6
+label IF_FALSE6
+push local 2
+push constant 2
+eq
+if-goto IF_TRUE7
+goto IF_FALSE7
+label IF_TRUE7
+push static 2
+push constant 100
+add
+pop static 2
+goto IF_END7
+label IF_FALSE7
+push local 2
+push constant 3
+eq
+if-goto IF_TRUE8
+goto IF_FALSE8
+label IF_TRUE8
+push static 2
+push constant 300
+add
+pop static 2
+goto IF_END8
+label IF_FALSE8
+push local 2
+push constant 4
+eq
+if-goto IF_TRUE9
+goto IF_FALSE9
+label IF_TRUE9
+push static 2
+push constant 1200
+add
+pop static 2
+label IF_FALSE9
+label IF_END8
+label IF_END7
+label IF_END6
+push constant 0
+return
+function Board.is_lost 1
+push constant 0
+pop local 0
+label WHILE_EXP0
+push local 0
+push constant 10
+lt
+not
+if-goto WHILE_END0
+push local 0
+push constant 0
+call Board.is_square_filled 2
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+not
+return
+label IF_FALSE0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+return
+function Board.move_line 3
+push constant 0
+pop local 0
+label WHILE_EXP0
+push local 0
+push constant 10
+lt
+not
+if-goto WHILE_END0
+push local 0
+push argument 0
+call Board.is_square_filled 2
+pop local 1
+push local 0
+push argument 1
+push local 1
+call Board.set_square_filled 3
+pop temp 0
+push local 0
+push argument 1
+call Square.new 2
+pop local 2
+push local 1
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push local 2
+push static 0
+call Square.draw 2
+pop temp 0
+goto IF_END0
+label IF_FALSE0
+push local 2
+push static 0
+call Square.undraw 2
+pop temp 0
+label IF_END0
+push local 2
+call Square.dispose 1
+pop temp 0
+push local 0
+push argument 0
+push constant 0
+call Board.set_square_filled 3
+pop temp 0
+push local 0
+push argument 0
+call Square.new 2
+pop local 2
+push local 2
+push static 0
+call Square.undraw 2
+pop temp 0
+push local 2
+call Square.dispose 1
+pop temp 0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+return
+function Board.is_line_full 2
+push constant 0
+pop local 0
+push constant 0
+not
+pop local 1
+label WHILE_EXP0
+push local 0
+push constant 10
+lt
+not
+if-goto WHILE_END0
+push local 0
+push argument 0
+call Board.is_square_filled 2
+not
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+pop local 1
+label IF_FALSE0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push local 1
+return
+function Board.is_square_filled 0
+push argument 1
+push constant 10
+call Math.multiply 2
+push argument 0
+add
+push static 1
+add
+pop pointer 1
+push that 0
+return
+function Board.set_square_filled 0
+push argument 1
+push constant 10
+call Math.multiply 2
+push argument 0
+add
+push static 1
+add
+push argument 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 0
+return

@@ -1,0 +1,361 @@
+function Main.main 14
+push constant 0
+pop local 13
+push constant 0
+pop local 4
+call PieceBlueprint.init_statics 0
+pop temp 0
+call Board.draw_initial 0
+pop temp 0
+push constant 5040
+call Random.set_seed 1
+pop temp 0
+call Piece.new 0
+pop local 0
+push constant 0
+pop local 2
+push constant 0
+not
+pop local 6
+push constant 0
+push constant 7
+call Random.next_in_range 2
+pop local 5
+push local 5
+push constant 1
+push constant 1
+call Piece.new_with_blueprint_idx_at 3
+pop local 9
+push constant 48
+push constant 72
+push constant 12
+push constant 350
+push constant 50
+call DrawBoard.new 5
+pop local 8
+push local 8
+call DrawBoard.draw_outline 1
+pop temp 0
+push constant 4
+push constant 44
+call Output.moveCursor 2
+pop temp 0
+push constant 5
+call String.new 1
+push constant 83
+call String.appendChar 2
+push constant 84
+call String.appendChar 2
+push constant 79
+call String.appendChar 2
+push constant 82
+call String.appendChar 2
+push constant 69
+call String.appendChar 2
+call Output.printString 1
+pop temp 0
+push local 9
+push local 8
+call Piece.draw 2
+pop temp 0
+push constant 21
+push constant 62
+push constant 0
+push constant 100
+push constant 50
+call DrawBoard.new 5
+pop local 10
+push local 10
+call DrawBoard.draw_outline 1
+pop temp 0
+push constant 4
+push constant 13
+call Output.moveCursor 2
+pop temp 0
+push constant 6
+call String.new 1
+push constant 80
+call String.appendChar 2
+push constant 79
+call String.appendChar 2
+push constant 73
+call String.appendChar 2
+push constant 78
+call String.appendChar 2
+push constant 84
+call String.appendChar 2
+push constant 83
+call String.appendChar 2
+call Output.printString 1
+pop temp 0
+push constant 5
+push constant 13
+call Output.moveCursor 2
+pop temp 0
+call Board.points 0
+call Output.printInt 1
+pop temp 0
+label WHILE_EXP0
+push local 13
+not
+not
+if-goto WHILE_END0
+push local 12
+not
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push local 11
+push constant 1
+add
+pop local 11
+call Keyboard.keyPressed 0
+push constant 0
+eq
+not
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push constant 0
+not
+pop local 12
+push local 11
+push constant 13
+call Math.multiply 2
+call Random.set_seed 1
+pop temp 0
+label IF_FALSE1
+label IF_FALSE0
+push constant 5
+push constant 13
+call Output.moveCursor 2
+pop temp 0
+call Board.points 0
+call Output.printInt 1
+pop temp 0
+call Keyboard.keyPressed 0
+push constant 67
+eq
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push local 6
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push local 5
+pop local 7
+push local 9
+push local 8
+call Piece.undraw 2
+pop temp 0
+push local 9
+call Piece.dispose 1
+pop temp 0
+push local 0
+call Piece.blueprint_idx 1
+pop local 5
+push local 5
+push constant 1
+push constant 1
+call Piece.new_with_blueprint_idx_at 3
+pop local 9
+push local 5
+push constant 1
+eq
+if-goto IF_TRUE4
+goto IF_FALSE4
+label IF_TRUE4
+push local 9
+call Piece.dispose 1
+pop temp 0
+push local 5
+push constant 1
+push constant 0
+call Piece.new_with_blueprint_idx_at 3
+pop local 9
+label IF_FALSE4
+push local 8
+call DrawBoard.draw_outline 1
+pop temp 0
+push constant 4
+push constant 44
+call Output.moveCursor 2
+pop temp 0
+push constant 5
+call String.new 1
+push constant 83
+call String.appendChar 2
+push constant 84
+call String.appendChar 2
+push constant 79
+call String.appendChar 2
+push constant 82
+call String.appendChar 2
+push constant 69
+call String.appendChar 2
+call Output.printString 1
+pop temp 0
+push local 9
+push local 8
+call Piece.draw 2
+pop temp 0
+push local 0
+call Board.draw_board 0
+call Piece.undraw 2
+pop temp 0
+push local 0
+call Piece.dispose 1
+pop temp 0
+push local 7
+call Piece.new_with_blueprint_idx 1
+pop local 0
+push constant 0
+pop local 6
+label IF_FALSE3
+label IF_FALSE2
+push local 2
+if-goto IF_TRUE5
+goto IF_FALSE5
+label IF_TRUE5
+push constant 0
+not
+pop local 6
+push constant 0
+pop local 2
+push local 0
+call Piece.dispose 1
+pop temp 0
+call Piece.new 0
+pop local 0
+push local 0
+call Piece.tick 1
+pop local 2
+label IF_FALSE5
+call Board.is_lost 0
+if-goto IF_TRUE6
+goto IF_FALSE6
+label IF_TRUE6
+push constant 0
+push constant 27
+call Output.moveCursor 2
+pop temp 0
+push constant 10
+call String.new 1
+push constant 71
+call String.appendChar 2
+push constant 65
+call String.appendChar 2
+push constant 77
+call String.appendChar 2
+push constant 69
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
+push constant 79
+call String.appendChar 2
+push constant 86
+call String.appendChar 2
+push constant 69
+call String.appendChar 2
+push constant 82
+call String.appendChar 2
+call Output.printString 1
+pop temp 0
+push constant 0
+not
+pop local 13
+label IF_FALSE6
+call Keyboard.keyPressed 0
+push constant 130
+eq
+if-goto IF_TRUE7
+goto IF_FALSE7
+label IF_TRUE7
+push local 0
+call Piece.move_left 1
+pop temp 0
+label IF_FALSE7
+call Keyboard.keyPressed 0
+push constant 132
+eq
+if-goto IF_TRUE8
+goto IF_FALSE8
+label IF_TRUE8
+push local 0
+call Piece.move_right 1
+pop temp 0
+label IF_FALSE8
+call Keyboard.keyPressed 0
+push constant 131
+eq
+if-goto IF_TRUE9
+goto IF_FALSE9
+label IF_TRUE9
+push local 4
+push constant 0
+eq
+if-goto IF_TRUE10
+goto IF_FALSE10
+label IF_TRUE10
+push local 0
+call Piece.rotate 1
+pop temp 0
+push constant 0
+not
+pop local 4
+label IF_FALSE10
+goto IF_END9
+label IF_FALSE9
+push constant 0
+pop local 4
+label IF_END9
+push local 1
+push constant 1
+add
+pop local 1
+push local 1
+push constant 5
+eq
+if-goto IF_TRUE11
+goto IF_FALSE11
+label IF_TRUE11
+push local 0
+call Piece.tick 1
+pop local 2
+push constant 0
+pop local 1
+label IF_FALSE11
+push constant 0
+pop local 3
+call Keyboard.keyPressed 0
+push constant 133
+eq
+if-goto IF_TRUE12
+goto IF_FALSE12
+label IF_TRUE12
+push constant 0
+not
+pop local 3
+label IF_FALSE12
+call Board.detect_full_lines 0
+pop temp 0
+push local 3
+if-goto IF_TRUE13
+goto IF_FALSE13
+label IF_TRUE13
+push constant 2
+call Sys.wait 1
+pop temp 0
+goto IF_END13
+label IF_FALSE13
+push constant 70
+call Sys.wait 1
+pop temp 0
+label IF_END13
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+return

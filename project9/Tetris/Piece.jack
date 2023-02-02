@@ -1,0 +1,262 @@
+class Piece { 
+    field Array sqrs;
+    field int tetromino;
+    field int rotation;
+    field int x;
+    field int y;
+    //field Square sqr;
+    
+    constructor Piece new() {
+        var PieceBlueprint o_tetromino;
+        var Square sqr;
+        var int rand;
+        let rand = Random.next_in_range(0, 7);
+        let o_tetromino = PieceBlueprint.get(rand,0);
+        let tetromino = rand;
+        let rotation = 0;
+        let x = 4;
+        let y = 0;
+        let sqrs = o_tetromino.apply(x, y);
+        let sqr = sqrs[0];
+
+        return this;
+    }
+
+    constructor Piece new_with_blueprint_idx(int blueprint_idx) {
+        var PieceBlueprint blueprint;
+        let blueprint = PieceBlueprint.get(blueprint_idx, 0);
+        let rotation = 0;
+        let x = 4;
+        let y = 0;
+        let tetromino = blueprint_idx;
+        let sqrs = blueprint.apply(x, y);
+
+        return this;
+    }
+
+    constructor Piece new_with_blueprint_idx_at(int blueprint_idx, int mx, int my) {
+        var PieceBlueprint blueprint;
+        let blueprint = PieceBlueprint.get(blueprint_idx, 0);
+        let rotation = 0;
+        let x = mx;
+        let y = my;
+        let tetromino = blueprint_idx;
+        let sqrs = blueprint.apply(x, y);
+
+        return this;
+    }
+    
+    constructor Piece from_sqrs(Array psqrs) {
+        let sqrs = psqrs;
+        return this;
+    }
+
+    method bool tick() {
+        var Square cur_sqr;
+        var Array next_sqrs;
+        var Piece next_piece;
+        var int i;
+        
+        let next_sqrs = Array.new(4);
+        let i = 0;
+        while(i < 4) {
+            let cur_sqr = sqrs[i];
+
+            let next_sqrs[i] = Square.new(cur_sqr.x(), cur_sqr.y() + 1);
+
+            let i = i + 1;
+        }
+        let next_piece = Piece.from_sqrs(next_sqrs);
+  
+        if(next_piece.collided()) {
+            let i = 0;
+            while(i < 4) {
+                let cur_sqr = sqrs[i];
+                do Board.set_square_filled(cur_sqr.x(), cur_sqr.y(), true);
+                let i = i + 1;
+            }
+            do next_piece.dispose();
+            return true;
+        } else {
+            let y = y + 1;
+            let i = 0;
+            while(i < 4) {
+                let cur_sqr = sqrs[i];
+                do cur_sqr.undraw(Board.draw_board());
+                do cur_sqr.dispose();
+                let cur_sqr = next_sqrs[i];
+                do cur_sqr.draw(Board.draw_board());
+                let sqrs[i] = cur_sqr;
+                let i = i + 1;
+            }
+            do Memory.deAlloc(next_piece);
+            do Memory.deAlloc(next_sqrs);
+            return false; 
+        }
+
+    }
+
+    method Array get_sqrs() {
+        return sqrs;
+    }
+
+    method bool collided() {
+        var bool did_collide;
+        var int i;
+        var Square cur_sqr;
+        let i = 0;
+        while(i<4) {
+            let cur_sqr = sqrs[i];
+            let did_collide = did_collide | cur_sqr.collided();
+
+            let i = i + 1;
+        }
+        return did_collide;
+    }
+
+    method void move_left() {
+        var int i;
+        var bool should_move;
+        var Square sqr;
+        let should_move = true;
+        let i = 0;
+        while(i < 4) {
+            let sqr = sqrs[i];
+            let sqr = Square.new(sqr.x()-1, sqr.y());
+            if(sqr.collided()) {
+                let should_move = false;
+            }
+            do sqr.dispose();
+            let i = i + 1;
+        }
+        if(should_move) {
+            let x = x - 1;
+            let i = 0;
+            while(i < 4) {
+                do Piece.move_square_left(sqrs[i]);
+                let i = i + 1;
+            }
+        }
+        return;
+    }
+
+    method void move_right() {
+        var int i;
+        var bool should_move;
+        var Square sqr;
+        let should_move = true;
+        let i = 0;
+        while(i < 4) {
+            let sqr = sqrs[i];
+            let sqr = Square.new(sqr.x() + 1, sqr.y());
+            if(sqr.collided()) {
+                let should_move = false;
+            }
+            do sqr.dispose();
+            let i = i + 1;
+        }
+        if(should_move) {
+            let x = x + 1;
+            let i = 3;
+            while(i > -1) {
+                do Piece.move_square_right(sqrs[i]);
+                let i = i - 1;
+            }
+        }
+        return;
+    }
+
+    function void move_square_left(Square sqr) {
+        if(sqr.x()-1 > -1) {
+            do sqr.undraw(Board.draw_board());
+            do sqr.set_x(sqr.x() - 1);
+            do sqr.draw(Board.draw_board());
+        }
+        return;
+    }
+
+    function void move_square_right(Square sqr) {
+        if(sqr.x()+1 < 10) {
+            do sqr.undraw(Board.draw_board());
+            do sqr.set_x(sqr.x() + 1);
+            do sqr.draw(Board.draw_board());
+        }
+        return;
+    }
+
+    method void rotate() {
+        var PieceBlueprint blueprint;
+        var int i;
+        var Square cur_sqr;
+        let rotation = rotation + 1;
+        if(rotation = 4) {
+            let rotation = 0;
+        }
+        let blueprint = PieceBlueprint.get(tetromino, rotation);
+        let i = 0;
+        while(i < 4) {
+            let cur_sqr = sqrs[i];
+            do cur_sqr.undraw(Board.draw_board());
+            let i = i + 1;
+        }
+        do sqrs.dispose();
+        let sqrs = blueprint.apply(x, y);
+        let cur_sqr = sqrs[4];
+        if(cur_sqr.x() = -2) {
+            let rotation = rotation - 1;
+            if(rotation = -1) {
+                let rotation = 3;
+            }
+            let blueprint = PieceBlueprint.get(tetromino, rotation);
+            let sqrs = blueprint.apply(x, y);
+        }
+        let i = 0;
+        while(i < 4) {
+            let cur_sqr = sqrs[i];
+            do cur_sqr.draw(Board.draw_board());
+            let i = i + 1;
+        }
+
+        return;
+    }
+    
+    method void draw(DrawBoard dboard) {
+        var int i;
+        var Square cur_sqr;
+        while(i < 4) {
+            let cur_sqr = sqrs[i];
+            do cur_sqr.draw(dboard);
+            let i = i + 1;
+        }
+        return;
+    }
+
+    method void undraw(DrawBoard dboard) {
+        var int i;
+        var Square cur_sqr;
+        while(i < 4) {
+            let cur_sqr = sqrs[i];
+            do cur_sqr.undraw(dboard);
+            let i = i + 1;
+        }
+        return;
+    }
+
+    method int blueprint_idx() {
+        return tetromino;
+    }
+
+    method void dispose() {
+        var int i;
+        var Square cur_sqr;
+        while(i < 4) {
+            let cur_sqr = sqrs[i];
+            do cur_sqr.dispose();
+            let i = i + 1;
+        }
+        do sqrs.dispose();
+
+        do Memory.deAlloc(this);
+        return;
+    }
+}

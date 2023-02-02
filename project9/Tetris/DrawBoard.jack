@@ -1,0 +1,52 @@
+class DrawBoard {
+    // all these variables are stored in pixels
+
+    field int height;
+    field int width;
+    field int square_size;
+    
+    // left most corner
+    field int origin_x;
+    field int origin_y;
+
+    constructor DrawBoard new(int mheight, int mwidth, int msquare_size, int morigin_x, int morigin_y) {
+        let height = mheight;
+        let width = mwidth;
+        let square_size = msquare_size; 
+        let origin_x = morigin_x;
+        let origin_y = morigin_y;
+        return this;
+    }
+
+    method int height() {
+        return height;
+    }
+
+    method int width() {
+        return width;
+    }
+
+    method int square_size() {
+        return square_size;
+    }
+
+    method int origin_x() {
+        return origin_x;
+    }
+
+    method int origin_y() {
+        return origin_y;
+    }
+
+    method void draw_outline() {
+        var int end_point_px_x, end_point_px_y;
+        let end_point_px_x = origin_x+width;
+        let end_point_px_y = origin_y+height;
+        do Screen.setColor(true);
+        do Screen.drawRectangle(origin_x-2, origin_y-2, end_point_px_x+2, end_point_px_y+2);
+        do Screen.setColor(false);
+        do Screen.drawRectangle(origin_x, origin_y, end_point_px_x, end_point_px_y);
+        return;
+    }
+
+}

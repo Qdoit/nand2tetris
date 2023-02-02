@@ -1,0 +1,683 @@
+function Piece.new 3
+push constant 5
+call Memory.alloc 1
+pop pointer 0
+push constant 0
+push constant 7
+call Random.next_in_range 2
+pop local 2
+push local 2
+push constant 0
+call PieceBlueprint.get 2
+pop local 0
+push local 2
+pop this 1
+push constant 0
+pop this 2
+push constant 4
+pop this 3
+push constant 0
+pop this 4
+push local 0
+push this 3
+push this 4
+call PieceBlueprint.apply 3
+pop this 0
+push constant 0
+push this 0
+add
+pop pointer 1
+push that 0
+pop local 1
+push pointer 0
+return
+function Piece.new_with_blueprint_idx 1
+push constant 5
+call Memory.alloc 1
+pop pointer 0
+push argument 0
+push constant 0
+call PieceBlueprint.get 2
+pop local 0
+push constant 0
+pop this 2
+push constant 4
+pop this 3
+push constant 0
+pop this 4
+push argument 0
+pop this 1
+push local 0
+push this 3
+push this 4
+call PieceBlueprint.apply 3
+pop this 0
+push pointer 0
+return
+function Piece.new_with_blueprint_idx_at 1
+push constant 5
+call Memory.alloc 1
+pop pointer 0
+push argument 0
+push constant 0
+call PieceBlueprint.get 2
+pop local 0
+push constant 0
+pop this 2
+push argument 1
+pop this 3
+push argument 2
+pop this 4
+push argument 0
+pop this 1
+push local 0
+push this 3
+push this 4
+call PieceBlueprint.apply 3
+pop this 0
+push pointer 0
+return
+function Piece.from_sqrs 0
+push constant 5
+call Memory.alloc 1
+pop pointer 0
+push argument 0
+pop this 0
+push pointer 0
+return
+function Piece.tick 4
+push argument 0
+pop pointer 0
+push constant 4
+call Array.new 1
+pop local 1
+push constant 0
+pop local 3
+label WHILE_EXP0
+push local 3
+push constant 4
+lt
+not
+if-goto WHILE_END0
+push local 3
+push this 0
+add
+pop pointer 1
+push that 0
+pop local 0
+push local 3
+push local 1
+add
+push local 0
+call Square.x 1
+push local 0
+call Square.y 1
+push constant 1
+add
+call Square.new 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push local 3
+push constant 1
+add
+pop local 3
+goto WHILE_EXP0
+label WHILE_END0
+push local 1
+call Piece.from_sqrs 1
+pop local 2
+push local 2
+call Piece.collided 1
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+pop local 3
+label WHILE_EXP1
+push local 3
+push constant 4
+lt
+not
+if-goto WHILE_END1
+push local 3
+push this 0
+add
+pop pointer 1
+push that 0
+pop local 0
+push local 0
+call Square.x 1
+push local 0
+call Square.y 1
+push constant 0
+not
+call Board.set_square_filled 3
+pop temp 0
+push local 3
+push constant 1
+add
+pop local 3
+goto WHILE_EXP1
+label WHILE_END1
+push local 2
+call Piece.dispose 1
+pop temp 0
+push constant 0
+not
+return
+goto IF_END0
+label IF_FALSE0
+push this 4
+push constant 1
+add
+pop this 4
+push constant 0
+pop local 3
+label WHILE_EXP2
+push local 3
+push constant 4
+lt
+not
+if-goto WHILE_END2
+push local 3
+push this 0
+add
+pop pointer 1
+push that 0
+pop local 0
+push local 0
+call Board.draw_board 0
+call Square.undraw 2
+pop temp 0
+push local 0
+call Square.dispose 1
+pop temp 0
+push local 3
+push local 1
+add
+pop pointer 1
+push that 0
+pop local 0
+push local 0
+call Board.draw_board 0
+call Square.draw 2
+pop temp 0
+push local 3
+push this 0
+add
+push local 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push local 3
+push constant 1
+add
+pop local 3
+goto WHILE_EXP2
+label WHILE_END2
+push local 2
+call Memory.deAlloc 1
+pop temp 0
+push local 1
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return
+label IF_END0
+function Piece.get_sqrs 0
+push argument 0
+pop pointer 0
+push this 0
+return
+function Piece.collided 3
+push argument 0
+pop pointer 0
+push constant 0
+pop local 1
+label WHILE_EXP0
+push local 1
+push constant 4
+lt
+not
+if-goto WHILE_END0
+push local 1
+push this 0
+add
+pop pointer 1
+push that 0
+pop local 2
+push local 0
+push local 2
+call Square.collided 1
+or
+pop local 0
+push local 1
+push constant 1
+add
+pop local 1
+goto WHILE_EXP0
+label WHILE_END0
+push local 0
+return
+function Piece.move_left 3
+push argument 0
+pop pointer 0
+push constant 0
+not
+pop local 1
+push constant 0
+pop local 0
+label WHILE_EXP0
+push local 0
+push constant 4
+lt
+not
+if-goto WHILE_END0
+push local 0
+push this 0
+add
+pop pointer 1
+push that 0
+pop local 2
+push local 2
+call Square.x 1
+push constant 1
+sub
+push local 2
+call Square.y 1
+call Square.new 2
+pop local 2
+push local 2
+call Square.collided 1
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+pop local 1
+label IF_FALSE0
+push local 2
+call Square.dispose 1
+pop temp 0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push local 1
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push this 3
+push constant 1
+sub
+pop this 3
+push constant 0
+pop local 0
+label WHILE_EXP1
+push local 0
+push constant 4
+lt
+not
+if-goto WHILE_END1
+push local 0
+push this 0
+add
+pop pointer 1
+push that 0
+call Piece.move_square_left 1
+pop temp 0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP1
+label WHILE_END1
+label IF_FALSE1
+push constant 0
+return
+function Piece.move_right 3
+push argument 0
+pop pointer 0
+push constant 0
+not
+pop local 1
+push constant 0
+pop local 0
+label WHILE_EXP0
+push local 0
+push constant 4
+lt
+not
+if-goto WHILE_END0
+push local 0
+push this 0
+add
+pop pointer 1
+push that 0
+pop local 2
+push local 2
+call Square.x 1
+push constant 1
+add
+push local 2
+call Square.y 1
+call Square.new 2
+pop local 2
+push local 2
+call Square.collided 1
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+pop local 1
+label IF_FALSE0
+push local 2
+call Square.dispose 1
+pop temp 0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push local 1
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push this 3
+push constant 1
+add
+pop this 3
+push constant 3
+pop local 0
+label WHILE_EXP1
+push local 0
+push constant 1
+neg
+gt
+not
+if-goto WHILE_END1
+push local 0
+push this 0
+add
+pop pointer 1
+push that 0
+call Piece.move_square_right 1
+pop temp 0
+push local 0
+push constant 1
+sub
+pop local 0
+goto WHILE_EXP1
+label WHILE_END1
+label IF_FALSE1
+push constant 0
+return
+function Piece.move_square_left 0
+push argument 0
+call Square.x 1
+push constant 1
+sub
+push constant 1
+neg
+gt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push argument 0
+call Board.draw_board 0
+call Square.undraw 2
+pop temp 0
+push argument 0
+push argument 0
+call Square.x 1
+push constant 1
+sub
+call Square.set_x 2
+pop temp 0
+push argument 0
+call Board.draw_board 0
+call Square.draw 2
+pop temp 0
+label IF_FALSE0
+push constant 0
+return
+function Piece.move_square_right 0
+push argument 0
+call Square.x 1
+push constant 1
+add
+push constant 10
+lt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push argument 0
+call Board.draw_board 0
+call Square.undraw 2
+pop temp 0
+push argument 0
+push argument 0
+call Square.x 1
+push constant 1
+add
+call Square.set_x 2
+pop temp 0
+push argument 0
+call Board.draw_board 0
+call Square.draw 2
+pop temp 0
+label IF_FALSE0
+push constant 0
+return
+function Piece.rotate 3
+push argument 0
+pop pointer 0
+push this 2
+push constant 1
+add
+pop this 2
+push this 2
+push constant 4
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+pop this 2
+label IF_FALSE0
+push this 1
+push this 2
+call PieceBlueprint.get 2
+pop local 0
+push constant 0
+pop local 1
+label WHILE_EXP0
+push local 1
+push constant 4
+lt
+not
+if-goto WHILE_END0
+push local 1
+push this 0
+add
+pop pointer 1
+push that 0
+pop local 2
+push local 2
+call Board.draw_board 0
+call Square.undraw 2
+pop temp 0
+push local 1
+push constant 1
+add
+pop local 1
+goto WHILE_EXP0
+label WHILE_END0
+push this 0
+call Array.dispose 1
+pop temp 0
+push local 0
+push this 3
+push this 4
+call PieceBlueprint.apply 3
+pop this 0
+push constant 4
+push this 0
+add
+pop pointer 1
+push that 0
+pop local 2
+push local 2
+call Square.x 1
+push constant 2
+neg
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push this 2
+push constant 1
+sub
+pop this 2
+push this 2
+push constant 1
+neg
+eq
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push constant 3
+pop this 2
+label IF_FALSE2
+push this 1
+push this 2
+call PieceBlueprint.get 2
+pop local 0
+push local 0
+push this 3
+push this 4
+call PieceBlueprint.apply 3
+pop this 0
+label IF_FALSE1
+push constant 0
+pop local 1
+label WHILE_EXP1
+push local 1
+push constant 4
+lt
+not
+if-goto WHILE_END1
+push local 1
+push this 0
+add
+pop pointer 1
+push that 0
+pop local 2
+push local 2
+call Board.draw_board 0
+call Square.draw 2
+pop temp 0
+push local 1
+push constant 1
+add
+pop local 1
+goto WHILE_EXP1
+label WHILE_END1
+push constant 0
+return
+function Piece.draw 2
+push argument 0
+pop pointer 0
+label WHILE_EXP0
+push local 0
+push constant 4
+lt
+not
+if-goto WHILE_END0
+push local 0
+push this 0
+add
+pop pointer 1
+push that 0
+pop local 1
+push local 1
+push argument 1
+call Square.draw 2
+pop temp 0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+return
+function Piece.undraw 2
+push argument 0
+pop pointer 0
+label WHILE_EXP0
+push local 0
+push constant 4
+lt
+not
+if-goto WHILE_END0
+push local 0
+push this 0
+add
+pop pointer 1
+push that 0
+pop local 1
+push local 1
+push argument 1
+call Square.undraw 2
+pop temp 0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+return
+function Piece.blueprint_idx 0
+push argument 0
+pop pointer 0
+push this 1
+return
+function Piece.dispose 2
+push argument 0
+pop pointer 0
+label WHILE_EXP0
+push local 0
+push constant 4
+lt
+not
+if-goto WHILE_END0
+push local 0
+push this 0
+add
+pop pointer 1
+push that 0
+pop local 1
+push local 1
+call Square.dispose 1
+pop temp 0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push this 0
+call Array.dispose 1
+pop temp 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return

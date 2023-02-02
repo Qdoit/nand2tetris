@@ -1,0 +1,28 @@
+// Static class which provides a function for generating pseudo random numbers
+class Random {
+    static int term;
+
+    function void set_seed(int new_seed) {
+        let term = new_seed;
+        return;
+    }
+
+    function int next() {
+        let term = ((term * 17) + 11);
+        if(term < 0) {
+            let term = -term;
+        }
+        return term;
+    }
+
+    function int next_in_range(int start, int end) {
+        var int x;
+        let x = Random.next();
+        let x = Random.modulo(x, end) + start;
+        return x;
+    }
+
+    function int modulo(int a, int b) {
+        return a - (b * (a / b));
+    }
+}

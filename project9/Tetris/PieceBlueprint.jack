@@ -1,0 +1,138 @@
+class PieceBlueprint {
+    // an array of 4 blocks making up the tetromino
+    // where (0,0) is the top left corner and (3,3) is the bottom right
+    field Array blocks;
+
+
+    static Array i_tetromino;
+    static Array o_tetromino;
+    static Array t_tetromino;
+    static Array s_tetromino;
+    static Array z_tetromino;
+    static Array j_tetromino;
+    static Array l_tetromino;
+
+    static Array tetrominoes;
+
+    function PieceBlueprint get(int tetromino, int rotation) {
+        var Array tetromino_array;
+        let tetromino_array = tetrominoes[tetromino];
+        return tetromino_array[rotation];
+    }
+    
+    function int i_idx() {
+        return 0;
+    }
+
+    constructor PieceBlueprint new(Square a1, Square a2, Square a3, Square a4) {
+        let blocks = Array.new(4);
+        let blocks[0] = a1;
+        let blocks[1] = a2;
+        let blocks[2] = a3;
+        let blocks[3] = a4;
+        return this;
+    }
+
+    constructor PieceBlueprint uninit() {
+        return this;
+    }
+    
+    // returns an array of the squares making up a tetromino, offset to location (x,y)
+    method Array apply(int x, int y) {
+        var Array applied_arr;
+        var Square cur_sqr;
+        var int i;
+        let applied_arr = Array.new(5);
+
+        let applied_arr[4] = Square.new(0, 0);
+        while(i < 4) {
+            let cur_sqr = blocks[i];
+            let applied_arr[i] = Square.new(cur_sqr.x() + x, cur_sqr.y()+y);
+            let cur_sqr = applied_arr[i];
+            if(cur_sqr.collided()) {
+                let applied_arr[4] = Square.new(-2, -2);
+            }
+            let i = i + 1;
+        }
+        return applied_arr;
+    }
+
+
+    function void init_statics() {
+        var int i;
+        
+        let tetrominoes = Array.new(7);
+
+        // tetromino i
+        let i_tetromino = Array.new(4);
+
+        let i_tetromino[0] = PieceBlueprint.new(Square.new(0,1), Square.new(1,1), Square.new(2,1), Square.new(3,1));
+        let i_tetromino[1] = PieceBlueprint.new(Square.new(2,3), Square.new(2,2), Square.new(2,1), Square.new(2,0)); 
+        let i_tetromino[2] = PieceBlueprint.new(Square.new(0,2), Square.new(1,2), Square.new(2,2), Square.new(3,2)); 
+        let i_tetromino[3] = PieceBlueprint.new(Square.new(1,3), Square.new(1,2), Square.new(1,1), Square.new(1,0));
+        
+        let tetrominoes[0] = i_tetromino;
+
+        // tetromino o 
+        let o_tetromino = Array.new(4);
+
+        let o_tetromino[0] = PieceBlueprint.new(Square.new(1, 2), Square.new(2, 2), Square.new(1, 1), Square.new(2, 1));
+        let o_tetromino[1] = PieceBlueprint.new(Square.new(1, 2), Square.new(2, 2), Square.new(1, 1), Square.new(2, 1));
+        let o_tetromino[2] = PieceBlueprint.new(Square.new(1, 2), Square.new(2, 2), Square.new(1, 1), Square.new(2, 1));
+        let o_tetromino[3] = PieceBlueprint.new(Square.new(1, 2), Square.new(2, 2), Square.new(1, 1), Square.new(2, 1));
+
+        let tetrominoes[1] = o_tetromino;
+
+        // tetromino t
+        let t_tetromino = Array.new(4);
+
+        let t_tetromino[0] = PieceBlueprint.new(Square.new(0, 1), Square.new(1,1), Square.new(2,1), Square.new(1,0));
+        let t_tetromino[1] = PieceBlueprint.new(Square.new(1,2), Square.new(1,1), Square.new(2,1), Square.new(1,0));
+        let t_tetromino[2] = PieceBlueprint.new(Square.new(1,2), Square.new(0, 1), Square.new(1,1), Square.new(2,1));
+        let t_tetromino[3] = PieceBlueprint.new(Square.new(1,2), Square.new(0,1), Square.new(1,1), Square.new(1,0));
+
+        let tetrominoes[2] = t_tetromino;
+        
+        // tetromino s
+        let s_tetromino = Array.new(4);
+        
+        let s_tetromino[0] = PieceBlueprint.new(Square.new(0, 1), Square.new(1,1), Square.new(1,0), Square.new(2,0));
+        let s_tetromino[1] = PieceBlueprint.new(Square.new(2, 2), Square.new(1,1), Square.new(2,1), Square.new(1,0));
+        let s_tetromino[2] = PieceBlueprint.new(Square.new(0, 2), Square.new(1,2), Square.new(1,1), Square.new(2,1));
+        let s_tetromino[3] = PieceBlueprint.new(Square.new(1, 2), Square.new(0,1), Square.new(1,1), Square.new(0,0));
+        
+        let tetrominoes[3] = s_tetromino;
+
+        // tetromino z
+        let z_tetromino = Array.new(4);
+        
+        let z_tetromino[0] = PieceBlueprint.new(Square.new(1, 1), Square.new(2,1), Square.new(0,0), Square.new(1,0));
+        let z_tetromino[1] = PieceBlueprint.new(Square.new(1, 2), Square.new(1,1), Square.new(2,1), Square.new(2,0));
+        let z_tetromino[2] = PieceBlueprint.new(Square.new(1, 2), Square.new(2,2), Square.new(0,1), Square.new(1,1));
+        let z_tetromino[3] = PieceBlueprint.new(Square.new(1, 2), Square.new(1,1), Square.new(2,1), Square.new(2,0));
+        
+        let tetrominoes[4] = z_tetromino;
+
+        // tetromino j
+        let j_tetromino = Array.new(4);
+        
+        let j_tetromino[0] = PieceBlueprint.new(Square.new(0, 1), Square.new(1,1), Square.new(2,1), Square.new(0,0));
+        let j_tetromino[1] = PieceBlueprint.new(Square.new(1, 2), Square.new(1,1), Square.new(1,0), Square.new(2,0));
+        let j_tetromino[2] = PieceBlueprint.new(Square.new(2,2), Square.new(0, 1), Square.new(1,1), Square.new(2,1));
+        let j_tetromino[3] = PieceBlueprint.new(Square.new(0, 2), Square.new(1, 2), Square.new(1,1), Square.new(1,0));
+        
+        let tetrominoes[5] = j_tetromino;
+
+        // tetromino l
+        let l_tetromino = Array.new(4);
+        
+        let l_tetromino[0] = PieceBlueprint.new(Square.new(0, 1), Square.new(1,1), Square.new(2,1), Square.new(2,0));
+        let l_tetromino[1] = PieceBlueprint.new(Square.new(1, 2), Square.new(2,2), Square.new(1,1), Square.new(1,0));
+        let l_tetromino[2] = PieceBlueprint.new(Square.new(0,2), Square.new(0, 1), Square.new(1,1), Square.new(2,1));
+        let l_tetromino[3] = PieceBlueprint.new(Square.new(1, 2), Square.new(1,1), Square.new(0,0), Square.new(1,0));
+        
+        let tetrominoes[6] = l_tetromino;
+
+        return;
+    }
+}
