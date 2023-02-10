@@ -1,12 +1,12 @@
-use std::fmt::Display;
+use std::{fmt::Display, io::Write};
 
 use crate::lexer::{Lexer, Keyword, Token};
 
 pub fn parse(lexer: &mut Lexer) {
-    class(lexer).unwrap(); 
+    class(lexer, std::io::stdout()).unwrap(); 
 }
 
-fn class<'a>(lexer: &mut Lexer<'a>) -> Result<(), Error<'a>> {
+fn class<'a>(lexer: &mut Lexer<'a>, out: impl Write) -> Result<(), Error<'a>> {
     println!("<class>");
     ensure_tok(Token::Keyword(Keyword::Class), lexer)?;
     ident(lexer)?;
