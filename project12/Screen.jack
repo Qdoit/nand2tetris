@@ -1,0 +1,179 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Screen.jack
+
+/**
+ * A library of functions for displaying graphics on the screen.
+ * The Hack physical screen consists of 256 rows (indexed 0..255, top to bottom)
+ * of 512 pixels each (indexed 0..511, left to right). The top left pixel on 
+ * the screen is indexed (0,0).
+ */
+class Screen {
+    // screen start: 16384 (inclusive)
+    // screen end: 24575 (inclusive)
+    static Array NTH_BIT_MASKS;
+    static bool color;
+    static Array screen;
+    /** Initializes the Screen. */
+    function void init() {
+        let color = true;
+        let screen = 16384;
+
+        let NTH_BIT_MASKS = Array.new(16);
+        let NTH_BIT_MASKS[0] = 1;
+        let NTH_BIT_MASKS[1] = 2;
+        let NTH_BIT_MASKS[2] = 4;
+        let NTH_BIT_MASKS[3] = 8;
+        let NTH_BIT_MASKS[4] = 16;
+        let NTH_BIT_MASKS[5] = 32;
+        let NTH_BIT_MASKS[6] = 64;
+        let NTH_BIT_MASKS[7] = 128;
+        let NTH_BIT_MASKS[8] = 256;
+        let NTH_BIT_MASKS[9] = 512;
+        let NTH_BIT_MASKS[10] = 1024;
+        let NTH_BIT_MASKS[11] = 2048;
+        let NTH_BIT_MASKS[12] = 4096;
+        let NTH_BIT_MASKS[13] = 8192;
+        let NTH_BIT_MASKS[14] = 16384;
+        let NTH_BIT_MASKS[15] = 16384 + 16384;
+        return;
+    }
+
+    /** Erases the entire screen. */
+    function void clearScreen() {
+        var int i;
+        let i = 0;
+        while(i < 8192) {
+            let screen[i] = 0;
+            let i = i + 1;
+        }
+        return;
+    }
+
+    /** Sets the current color, to be used for all subsequent drawXXX commands.
+     *  Black is represented by true, white by false. */
+    function void setColor(boolean b) {
+        let color = b;
+        return;
+    }
+
+    /** Draws the (x,y) pixel, using the current color. */
+    function void drawPixel(int x, int y) {
+        var int line_loc;
+        var int line;
+        var int mask;
+        let line_loc = (x/16) + (y * 32);
+        
+        // x & 15 is equivalent to modulo of 16
+        let mask = NTH_BIT_MASKS[x & 15];
+        if(color) {
+            let screen[line_loc] = screen[line_loc] | mask;
+        } else {
+            let screen[line_loc] = screen[line_loc] & (~mask);
+        }
+
+        return;
+    }
+
+    /** Draws a line from pixel (x1,y1) to pixel (x2,y2), using the current color. */
+    function void drawLine(int x1, int y1, int x2, int y2) {
+        var int dx, dy;
+        var int shift_v, shift_h;
+        var int a, b;
+        var int diff;
+        let dx = x2 - x1;
+        let dy = y2 - y1;
+
+        if(dx = 0) {
+            do Screen.drawVLine(x1, y1, y2);
+            return;
+        }
+        if(dy = 0) {
+            do Screen.drawHLine(x1, x2, y1);
+            return;
+        }
+
+        if(dx < 0) {
+            let shift_h = -1;
+        } else {
+            let shift_h = 1;
+        }
+
+        if(dy < 0) {
+            let shift_v = -1;
+        } else {
+            let shift_v = 1;
+        }
+        
+        let dx = Math.abs(dx);
+        let dy = Math.abs(dy);
+
+        while (~(Math.abs(a) > dx) & ~(Math.abs(b) > dy)) {
+            do Screen.drawPixel(x1 + a, y1 + b);
+            
+            if(diff < 0) {
+                let a = a + shift_h;
+                let diff = diff + dy;
+            } else {
+                let b = b + shift_v;
+                let diff = diff - dx;
+            }
+        }
+        
+        return;
+    }
+
+    function void drawHLine(int x1, int x2, int y) {
+        // PERF: setting entire u16 registers at a time would be significantly faster for longer lines
+        var int i;
+        let i = Math.min(x1, x2);
+        let x2 = Math.max(x1, x2);
+        while(~(i > x2)) {
+            if(((i & 15) = 0) & (i + 15 < x2)) {
+                if(color) {
+                    let screen[(y*32)+(i/16)] = -1;
+                } else {
+                    let screen[(y*32)+(i/16)] = 0;
+                }
+                let i = i + 16;
+            }
+            do Screen.drawPixel(i, y);
+            let i = i + 1;
+        }
+
+        return;
+    }
+    
+    function void drawVLine(int x, int y1, int y2) {
+        var int i;
+        let i = Math.min(y1, y2);
+        let y2 = Math.max(y1, y2);
+        while(~(i > y2)) {
+            do Screen.drawPixel(x, i);
+            let i = i + 1;
+        }
+        return;
+    }
+
+    /** Draws a filled rectangle whose top left corner is (x1, y1)
+     * and bottom right corner is (x2,y2), using the current color. */
+    function void drawRectangle(int x1, int y1, int x2, int y2) {
+        while(~(y1 > y2)) {
+            do Screen.drawHLine(x1, x2, y1);
+            let y1 = y1 + 1;
+        }
+        return;
+    }
+
+    /** Draws a filled circle of radius r<=181 around (x,y), using the current color. */
+    function void drawCircle(int x, int y, int r) {
+        var int i;
+        let i = -r;
+        while(~(i > r)) {
+            do Screen.drawLine(x - Math.sqrt((r*r) - (i*i)), y + i, x+Math.sqrt((r*r) - (i*i)), y + i);
+            let i = i + 1;
+        }
+        return;
+    }
+}

@@ -1,0 +1,148 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/String.jack
+
+/**
+ * Represents character strings. In addition for constructing and disposing
+ * strings, the class features methods for getting and setting individual
+ * characters of the string, for erasing the string's last character,
+ * for appending a character to the string's end, and more typical
+ * string-oriented operations.
+ */
+class String {
+    field int max_len, len;
+    field Array arr;
+
+    /** constructs a new empty string with a maximum length of maxLength
+     *  and initial length of 0. */
+    constructor String new(int maxLength) {
+        let max_len = maxLength;
+        let len = 0;
+        if(~(maxLength = 0)) {
+            let arr = Array.new(maxLength);
+        }
+        return this;
+    }
+
+    /** Disposes this string. */
+    method void dispose() {
+        if(~(max_len = 0)) {
+            do arr.dispose();
+        }
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /** Returns the current length of this string. */
+    method int length() {
+        return len;
+    }
+
+    /** Returns the character at the j-th location of this string. */
+    method char charAt(int j) {
+        return arr[j];
+    }
+
+    /** Sets the character at the j-th location of this string to c. */
+    method void setCharAt(int j, char c) {
+        let arr[j] = c;
+        return;
+    }
+
+    /** Appends c to this string's end and returns this string. */
+    method String appendChar(char c) {
+        let arr[len] = c;
+        let len = len + 1;
+        return this;
+    }
+
+    /** Erases the last character from this string. */
+    method void eraseLastChar() {
+        let len = len - 1;
+        return;
+    }
+
+    /** Returns the integer value of this string, 
+     *  until a non-digit character is detected. */
+    method int intValue() {
+        var char c;
+        var int i;
+        var int sum;
+        var bool loop_continue;
+        var bool negate_res;
+        if(len = 0) {
+            return 0;
+        }
+
+        if(arr[0] = 45) {
+            let negate_res = true;
+            let i = 1;
+        }
+        
+        let loop_continue = true;
+        while (loop_continue) {
+            let c = arr[i];
+            let loop_continue = loop_continue & String.isDigit(c);
+            let sum = sum * 10;
+            let sum = sum + (c - 48);
+            let i = i + 1;
+            let loop_continue = loop_continue & (i < len);
+        }
+        
+        if(negate_res) {
+            let sum = -sum;
+        }
+        return sum;
+    }
+
+    function int isDigit(char c) {
+        return (c > 47) & (c < 58); 
+    }
+
+    /** Sets this string to hold a representation of the given value. */
+    method void setInt(int val) {
+        let len = 0;
+        if(val < 0) {
+            do appendChar(45);
+            let len = 1;
+            let val = -val;
+        }
+        
+        do setIntRec(val);
+
+        return;
+    }
+
+    method String setIntRec(int val) {
+        var int last_digit;
+        var String rr;
+        
+        let last_digit = String.modulo(val, 10);
+        if(val < 10) {
+            return appendChar(last_digit + 48);
+        } else {
+            let rr = setIntRec(val/10);
+            return rr.appendChar(last_digit + 48);
+        }
+    }
+
+    function int modulo(int a, int b) {
+        return a - (b * (a / b));
+    }
+
+    /** Returns the new line character. */
+    function char newLine() {
+        return 128;
+    }
+
+    /** Returns the backspace character. */
+    function char backSpace() {
+        return 129;
+    }
+
+    /** Returns the double quote (") character. */
+    function char doubleQuote() {
+        return 34;
+    }
+}

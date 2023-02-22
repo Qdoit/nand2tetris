@@ -1,0 +1,39 @@
+class Sys {
+    function void init() { 
+        do Memory.init();
+        do Math.init();
+        do Keyboard.init();
+        do Output.init();
+        do Screen.init();
+        do Main.main();
+        do Sys.halt();
+        return;
+    }
+
+    function void halt() {
+        while(true) {}
+        // unreachable
+        return;
+    }
+
+    function void wait(int duration) {
+        var int counter;
+        var int counter2;
+        while(counter < 160) {
+            let counter = counter + 1;
+            let counter2 = 0;
+            while(counter2 < 1000) {
+                let counter2 = counter2 + 1;
+            }
+        }
+        return;
+    }
+
+    function void error(int errorCode) {
+        do Output.printString("ERR");
+        do Output.printInt(errorCode);
+        do Sys.halt();
+        // unreachable
+        return;
+    }
+}

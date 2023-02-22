@@ -1,0 +1,137 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Math.jack
+
+/**
+ * A library of commonly used mathematical functions.
+ * Note: Jack compilers implement multiplication and division using OS method calls.
+ */
+class Math {
+    static Array NTH_BIT_MASKS;
+
+    /** Initializes the library. */
+    function void init() {
+        let NTH_BIT_MASKS = Array.new(16);
+        let NTH_BIT_MASKS[0] = 1;
+        let NTH_BIT_MASKS[1] = 2;
+        let NTH_BIT_MASKS[2] = 4;
+        let NTH_BIT_MASKS[3] = 8;
+        let NTH_BIT_MASKS[4] = 16;
+        let NTH_BIT_MASKS[5] = 32;
+        let NTH_BIT_MASKS[6] = 64;
+        let NTH_BIT_MASKS[7] = 128;
+        let NTH_BIT_MASKS[8] = 256;
+        let NTH_BIT_MASKS[9] = 512;
+        let NTH_BIT_MASKS[10] = 1024;
+        let NTH_BIT_MASKS[11] = 2048;
+        let NTH_BIT_MASKS[12] = 4096;
+        let NTH_BIT_MASKS[13] = 8192;
+        let NTH_BIT_MASKS[14] = 16384;
+        let NTH_BIT_MASKS[15] = 16384 + 16384;
+        return;
+    }
+
+    /** Returns the absolute value of x. */
+    function int abs(int x) {
+        if (x < 0) {
+            return -x;
+        } else {
+            return x;
+        }
+    }
+
+    /** Returns the product of x and y. 
+     *  When a Jack compiler detects the multiplication operator '*' in the 
+     *  program's code, it handles it by invoking this method. In other words,
+     *  the Jack expressions x*y and multiply(x,y) return the same value.
+     */
+    function int multiply(int x, int y) {
+        var int sum, shift_x, i;
+        let sum = 0;
+        let shift_x = x;
+        let i = 0;
+        while (i < 16) {
+            if (~((y & NTH_BIT_MASKS[i]) = 0)) {
+                let sum = sum + shift_x;
+            }
+            let i = i + 1;
+            let shift_x = shift_x + shift_x;
+        }
+        return sum;
+    }
+
+    /** Returns the integer part of x/y.
+     *  When a Jack compiler detects the multiplication operator '/' in the 
+     *  program's code, it handles it by invoking this method. In other words,
+     *  the Jack expressions x/y and divide(x,y) return the same value.
+     */
+    function int divide(int x, int y) {
+        var bool is_neg;
+        var int res;
+        if(x < 0) {
+            let is_neg = true;
+            if (y < 0) {
+                let is_neg = false;
+            }
+        }
+        let x = Math.abs(x);
+        let y = Math.abs(y);
+        
+        // q * y * 2
+        let res = Math.div_internal(x, y);
+        
+        if (is_neg) {
+            let res = -res;
+        }
+
+        return res;
+    }
+
+    function int div_internal(int x, int y) {
+        var int q;
+        // TODO: improve perf by replacing the (q+q) * y multiplication
+        if (y > x) {
+            return 0;
+        }
+        let q = Math.div_internal(x, y + y);
+        if((x - ((q+q) * y)) < y) {
+            return q + q;
+        } else {
+            return (q + q) + 1;
+        }
+    }
+
+    /** Returns the integer part of the square root of x. */
+    function int sqrt(int x) {
+        var int y, j, t;
+        let j = 7;
+
+        while ((j + 1) > 0) {
+            let t = (y + NTH_BIT_MASKS[j]) * (y + NTH_BIT_MASKS[j]);
+            if (~(t > x) & (t > 0)) {
+                let y = y + NTH_BIT_MASKS[j];
+            } 
+            let j = j - 1;
+        }
+        return y;
+    }
+
+    /** Returns the greater number. */
+    function int max(int a, int b) {
+        if (a > b) {
+            return a;
+        } else {
+            return b;
+        }
+    }
+
+    /** Returns the smaller number. */
+    function int min(int a, int b) {
+        if (a < b) {
+            return a;
+        } else {
+            return b;
+        }
+    }
+}

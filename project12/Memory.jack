@@ -1,0 +1,70 @@
+class Memory {
+    static Array mem;
+    static int free_list_head;
+
+    function void init() {
+        let mem = 0;
+        // heapBase
+        let free_list_head = 2048;
+        let mem[free_list_head] = 14336;
+        let mem[free_list_head + 1] = 0;
+        return;
+    }
+
+    function int peek(int address) {
+        return mem[address];
+    }
+
+    function void poke(int address, int value) {
+        let mem[address] = value;
+        return;
+    }
+
+    function Array alloc(int size) {
+        var Array block;
+        var bool defragged;
+        let block = free_list_head;
+        while(mem[block] < size + 2) {
+            let block = mem[block + 1];
+            if(block = 0) {
+                if(~defragged) {
+                    do Memory.defrag();
+                    let defragged = true;
+                } else {
+                    do Sys.error(12);
+                    return 0;
+                }
+            }
+        }
+        
+        if ((mem[block] - size - 1) > 2) {
+            let free_list_head = free_list_head + size + 1;
+            let mem[free_list_head] = mem[block] - size - 1;
+            let mem[free_list_head + 1] = mem[block + 1];
+        } else {
+            let free_list_head = mem[free_list_head + 1];
+        }
+        let block = block + 1;
+
+        return block;
+    }
+
+    function void deAlloc(Array o) {
+        let o[1] = free_list_head;
+        let free_list_head = o - 1;
+        return;
+    }
+
+    function void defrag() {
+        var Array cur_block, next_block;
+        let cur_block = free_list_head;
+        while(~(cur_block[1] = 0)) {
+            let next_block = cur_block[1];
+            if(next_block = (cur_block + 1 + cur_block[0])) {
+                let cur_block[0] = cur_block[0] + 2 + next_block[0];
+            }
+            let cur_block = cur_block[1];
+        }
+        return;
+    }
+}
