@@ -409,6 +409,7 @@ fn subroutine_call<'a>(
                 codegen.push(obj.kind.into(), obj.idx);
                 let class_name = match obj.ty {
                     codegen::Ty::Class(cn) => cn,
+                    // this should ~probably~ definitely be handled as an error
                     _ => panic!("ATTEMPT TO USE METHOD ON PRIMITIVE"),
                 };
                 ensure_tok(Token::Symbol(b'.'), lexer)?;
@@ -507,7 +508,6 @@ fn term<'a>(lexer: &mut Lexer<'a>, codegen: &mut CodeGen<'a, impl Write>) -> Res
             }
             Token::StringConstant(v) => {
                 lexer.next();
-                // TODO: strings
                 codegen.push(Segment::Constant, (v.len() + 1) as u16);
                 codegen.call(b"String.new", 1);
                 for c in v.iter() {
@@ -544,7 +544,6 @@ fn term<'a>(lexer: &mut Lexer<'a>, codegen: &mut CodeGen<'a, impl Write>) -> Res
                 Some(Token::Symbol(b'[')) => {
                     let array_name = ident(lexer)?;
                     ensure_tok(Token::Symbol(b'['), lexer)?;
-                    // This leaves expression on the stack
                     expression(lexer, codegen)?;
                     let array_name = codegen.get_symbol(array_name).unwrap();
                     codegen.push(array_name.kind.into(), array_name.idx);

@@ -90,11 +90,11 @@ class Math {
 
     function int div_internal(int x, int y) {
         var int q;
-        // TODO: improve perf by replacing the (q+q) * y multiplication
         if (y > x) {
             return 0;
         }
         let q = Math.div_internal(x, y + y);
+        // PERF: you could get the result of this multiplication from the other recursions with a little refactoring
         if((x - ((q+q) * y)) < y) {
             return q + q;
         } else {

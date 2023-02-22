@@ -52,7 +52,6 @@ CHIP CPU {
     DRegister(in=aluoutToD, load=loadd, out=aluIn1);
     And(a=instruction[4], b=instruction[15], out=loadd);
     
-    //ALU (TODO: check if x y order is correct)
     ALU(x=aluIn1, y=aluIn2, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], zr=isZero, ng=isNeg, out=aluoutToD, out=aluoutToA,out=outM);
 
     // PC

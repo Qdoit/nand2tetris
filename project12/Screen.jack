@@ -125,7 +125,6 @@ class Screen {
     }
 
     function void drawHLine(int x1, int x2, int y) {
-        // PERF: setting entire u16 registers at a time would be significantly faster for longer lines
         var int i;
         let i = Math.min(x1, x2);
         let x2 = Math.max(x1, x2);

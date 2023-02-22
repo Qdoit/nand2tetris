@@ -1,8 +1,8 @@
 use std::fs::DirEntry;
 use std::path::Path;
 
-use jackanalyser::lexer;
-use jackanalyser::parse;
+use jackc::lexer;
+use jackc::parse;
 
 fn main() {
     let mut args = std::env::args();
